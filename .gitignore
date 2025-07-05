@@ -1,0 +1,33 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+
+# Logs
+logs/
+*.log
+
+# PyInstaller build files
+dist/
+build/
+*.spec
+
+# System files
+.DS_Store
+Thumbs.db
+
+# OS-specific files
+ehthumbs.db
+desktop.ini
+
+# Sync tool packaging
+sync_tool/
+sync.exe
+
+# Secrets and config (optional: include only if sensitive)
+config.json
