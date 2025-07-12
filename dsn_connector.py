@@ -1,5 +1,6 @@
 import pyodbc
 import time
+from datetime import date, datetime
 from utils import log
 from table_mapping import TABLE_MAPPING
 from decimal import Decimal
@@ -7,6 +8,8 @@ from decimal import Decimal
 def safe_convert(value):
     if isinstance(value, Decimal):
         return float(value)
+    if isinstance(value, (date, datetime)):  # convert date to string
+        return value.isoformat()
     return value
 
 def connect_with_retry(dsn, retries=3, delay=5):
@@ -27,7 +30,7 @@ def connect_with_retry(dsn, retries=3, delay=5):
             else:
                 raise
 
-def fetch_data(source, batch_size=2000):  # Increased batch size
+def fetch_data(source, batch_size=2000):
     try:
         source_config = TABLE_MAPPING.get(source['name'])
         if not source_config:
@@ -37,13 +40,17 @@ def fetch_data(source, batch_size=2000):  # Increased batch size
         conn = connect_with_retry(source['dsn'], retries=3, delay=5)
         cursor = conn.cursor()
 
-        table = source_config['table']
-        columns = source_config.get('columns', '*')
-        condition = source_config.get('condition')
+        #full query or table + columns + condition
+        if 'query' in source_config:
+            query = source_config['query'].strip()
+        else:
+            table = source_config['table']
+            columns = source_config.get('columns', '*')
+            condition = source_config.get('condition')
 
-        query = f"SELECT {columns} FROM {table}"
-        if condition:
-            query += f" WHERE {condition}"
+            query = f"SELECT {columns} FROM {table}"
+            if condition:
+                query += f" WHERE {condition}"
 
         log(f"🔍 Running Query on {source['name']}: {query}")
         cursor.execute(query)
@@ -51,16 +58,15 @@ def fetch_data(source, batch_size=2000):  # Increased batch size
         column_names = [column[0] for column in cursor.description]
         data = []
 
-        # Fetch all at once if small dataset, otherwise batch
+        # Try to fetch all rows at once (fast for small datasets)
         try:
-            # Try to fetch all first (faster for small datasets)
             all_rows = cursor.fetchall()
             for row in all_rows:
                 record = {col: safe_convert(val) for col, val in zip(column_names, row)}
                 data.append(record)
             log(f"✅ Fetched {len(data)} rows from {source['name']} at once")
         except:
-            # Fallback to batch processing
+            # Fallback to batch fetching
             batch_num = 1
             while True:
                 rows = cursor.fetchmany(batch_size)
@@ -78,3 +84,4 @@ def fetch_data(source, batch_size=2000):  # Increased batch size
     except Exception as e:
         log(f"❌ Error fetching data from {source['name']}: {e}")
         return None
+
