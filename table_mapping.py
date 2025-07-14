@@ -1,28 +1,83 @@
 TABLE_MAPPING = {
     "IMC": {
-        "table": "acc_master",
-        "columns": "code, name, opening_balance, debit, credit, place, phone2, openingdepartment",
-        "condition": "super_code IN ('IMCC', 'IMCDI', 'IMK', 'IMM', 'RC', 'SYSK')"
+        "query": """
+            SELECT 
+                acc_master.code,
+                acc_master.name,
+                acc_master.opening_balance,
+                acc_master.debit,
+                acc_master.credit,
+                acc_master.place,
+                acc_master.phone2,
+                acc_departments.department AS openingdepartment
+            FROM acc_master
+            LEFT JOIN acc_departments ON acc_master.openingdepartment = acc_departments.department_id
+            WHERE acc_master.super_code IN ('IMCC', 'IMCDI', 'IMK', 'IMM', 'RC', 'SYSK')
+        """
     },
     "IMCB": {
-        "table": "acc_master",
-        "columns": "code, name, opening_balance, debit, credit, place, phone2, openingdepartment",
-        "condition": "super_code = 'DEBTO'"
+        "query": """
+            SELECT 
+                acc_master.code,
+                acc_master.name,
+                acc_master.opening_balance,
+                acc_master.debit,
+                acc_master.credit,
+                acc_master.place,
+                acc_master.phone2,
+                acc_departments.department AS openingdepartment
+            FROM acc_master
+            LEFT JOIN acc_departments ON acc_master.openingdepartment = acc_departments.department_id
+            WHERE acc_master.super_code = 'DEBTO'
+        """
     },
     "Sysmac_INFO": {
-        "table": "acc_master",
-        "columns": "code, name, opening_balance, debit, credit, place, phone2, openingdepartment",
-        "condition": "super_code = 'DEBTO'"
+        "query": """
+            SELECT 
+                acc_master.code,
+                acc_master.name,
+                acc_master.opening_balance,
+                acc_master.debit,
+                acc_master.credit,
+                acc_master.place,
+                acc_master.phone2,
+                acc_departments.department AS openingdepartment
+            FROM acc_master
+            LEFT JOIN acc_departments ON acc_master.openingdepartment = acc_departments.department_id
+            WHERE acc_master.super_code = 'DEBTO'
+        """
     },
     "DQ": {
-        "table": "acc_master",
-        "columns": "code, name, opening_balance, debit, credit, place, phone2, openingdepartment",
-        "condition": "super_code = 'DEBTO'"
+        "query": """
+            SELECT 
+                acc_master.code,
+                acc_master.name,
+                acc_master.opening_balance,
+                acc_master.debit,
+                acc_master.credit,
+                acc_master.place,
+                acc_master.phone2,
+                acc_departments.department AS openingdepartment
+            FROM acc_master
+            LEFT JOIN acc_departments ON acc_master.openingdepartment = acc_departments.department_id
+            WHERE acc_master.super_code = 'DEBTO'
+        """
     },
     "SYSMAC": {
-        "table": "acc_master",
-        "columns": "code, name, opening_balance, debit, credit, place, phone2, openingdepartment",
-        "condition": "super_code = 'DEBTO'"
+        "query": """
+            SELECT 
+                acc_master.code,
+                acc_master.name,
+                acc_master.opening_balance,
+                acc_master.debit,
+                acc_master.credit,
+                acc_master.place,
+                acc_master.phone2,
+                acc_departments.department AS openingdepartment
+            FROM acc_master
+            LEFT JOIN acc_departments ON acc_master.openingdepartment = acc_departments.department_id
+            WHERE acc_master.super_code = 'DEBTO'
+        """
     },
     "RRC_CLIENTS": {
         "query": """
@@ -49,7 +104,6 @@ TABLE_MAPPING = {
               rrc_clients.nature
             FROM rrc_clients
             LEFT JOIN rrc_product ON rrc_clients.software = rrc_product.code
-            WHERE rrc_clients.directdealing IN ('Y','S')
         """
     }
 }
