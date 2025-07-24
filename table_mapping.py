@@ -31,6 +31,22 @@ TABLE_MAPPING = {
             WHERE acc_master.super_code = 'DEBTO';
         """
     },
+    "SYSMAC INV_MAST": {
+        "query": """
+            SELECT
+                inv.modeofpayment,
+                inv.customerid,
+                inv.invdate,
+                inv.nettotal,
+                inv.paid,
+                inv.type || '-' || inv.billno AS bill_ref
+            FROM DBA.acc_invmast AS inv
+            INNER JOIN DBA.acc_master AS cust
+                ON inv.customerid = cust.code
+            WHERE cust.super_code = 'DEBTO'
+            AND inv.paid < inv.nettotal;
+        """
+    },
     "IMCB LLP": {
         "query": """
             SELECT 
@@ -47,20 +63,34 @@ TABLE_MAPPING = {
             WHERE acc_master.super_code = 'DEBTO'
         """
     },
-    "IMC LLP LEDGERS": {
+"IMCB LLP LEDGERS": {
+    "query": """SELECT
+        acc_ledgers.code,
+        acc_ledgers.particulars,
+        acc_ledgers.debit,
+        acc_ledgers.credit,
+        acc_ledgers.entry_mode,
+        acc_ledgers."date" AS entry_date,
+        CAST(acc_ledgers.voucher_no AS INTEGER) AS voucher_no,
+        acc_ledgers.narration
+    FROM acc_ledgers
+    LEFT JOIN acc_master ON acc_ledgers.code = acc_master.code
+    WHERE acc_master.super_code = 'DEBTO';"""
+},
+    "IMCB LLP INV_MAST": {
         "query": """
             SELECT
-                acc_ledgers.code,
-                acc_ledgers.particulars,
-                acc_ledgers.debit,
-                acc_ledgers.credit,
-                acc_ledgers.entry_mode,
-                acc_ledgers."date" AS entry_date,
-                CAST(acc_ledgers.voucher_no AS INTEGER) AS voucher_no,
-                acc_ledgers.narration
-            FROM acc_ledgers
-            LEFT JOIN acc_master ON acc_ledgers.code = acc_master.code
-            WHERE acc_master.super_code = 'DEBTO';
+                inv.modeofpayment,
+                inv.customerid,
+                inv.invdate,
+                inv.nettotal,
+                inv.paid,
+                inv.type || '-' || inv.billno AS bill_ref
+            FROM DBA.acc_invmast AS inv
+            INNER JOIN DBA.acc_master AS cust
+                ON inv.customerid = cust.code
+            WHERE cust.super_code = 'DEBTO'
+            AND inv.paid < inv.nettotal;
         """
     },
     "IMC": {
@@ -95,6 +125,22 @@ TABLE_MAPPING = {
             WHERE acc_master.super_code = 'DEBTO';
         """
     },
+    "IMC INV_MAST": {
+        "query": """
+            SELECT
+                inv.modeofpayment,
+                inv.customerid,
+                inv.invdate,
+                inv.nettotal,
+                inv.paid,
+                inv.type || '-' || inv.billno AS bill_ref
+            FROM DBA.acc_invmast AS inv
+            INNER JOIN DBA.acc_master AS cust
+                ON inv.customerid = cust.code
+            WHERE cust.super_code = 'DEBTO'
+            AND inv.paid < inv.nettotal;
+        """
+    },
     "Sysmac_INFO": {
         "query": """
             SELECT 
@@ -127,6 +173,22 @@ TABLE_MAPPING = {
             WHERE acc_master.super_code = 'DEBTO';
         """
     },
+    "Sysmac_INFO INV_MAST": {
+        "query": """
+            SELECT
+                inv.modeofpayment,
+                inv.customerid,
+                inv.invdate,
+                inv.nettotal,
+                inv.paid,
+                inv.type || '-' || inv.billno AS bill_ref
+            FROM DBA.acc_invmast AS inv
+            INNER JOIN DBA.acc_master AS cust
+                ON inv.customerid = cust.code
+            WHERE cust.super_code = 'DEBTO'
+            AND inv.paid < inv.nettotal;
+        """
+    },
     "DQ": {
         "query": """
             SELECT 
@@ -157,6 +219,22 @@ TABLE_MAPPING = {
             FROM acc_ledgers
             LEFT JOIN acc_master ON acc_ledgers.code = acc_master.code
             WHERE acc_master.super_code = 'DEBTO';
+        """
+    },
+    "DQ INV_MAST": {
+        "query": """
+            SELECT
+                inv.modeofpayment,
+                inv.customerid,
+                inv.invdate,
+                inv.nettotal,
+                inv.paid,
+                inv.type || '-' || inv.billno AS bill_ref
+            FROM DBA.acc_invmast AS inv
+            INNER JOIN DBA.acc_master AS cust
+                ON inv.customerid = cust.code
+            WHERE cust.super_code = 'DEBTO'
+            AND inv.paid < inv.nettotal;
         """
     },
     "RRC_CLIENTS": {
